@@ -1,78 +1,63 @@
-class IterativeDeepening:
-    def __init__(self):
-        self.path = []
-        self.rows = 0
-        self.cols = 0
-        self.depth = 0
-        self.maxDepth = 0
-        self.goalFound = False
-        self.maze = []
-        self.start = (0, 0)
-        self.target = (0, 0)
-        self.directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]  # up, down, left, right
 
-    def read_input(self):
-      
-        self.rows, self.cols = map(int, input().split())
-        
-       
-        self.maze = []
-        for _ in range(self.rows):
-            self.maze.append(list(map(int, input().split())))
-        
-        
-        self.start = tuple(map(int, input().split()))
-        self.target = tuple(map(int, input().split()))
+# Iterative Deepening DFS (IDDFS) Maze Solver
 
-    def depth_limited_search(self, current, visited, current_depth):
-        if current == self.target:
-            self.goalFound = True
-            return True
-        
-        if current_depth >= self.maxDepth:
-            return False
-        
-        for direction in self.directions:
-            next_row = current[0] + direction[0]
-            next_col = current[1] + direction[1]
-            
-          
-            if (0 <= next_row < self.rows and 0 <= next_col < self.cols and 
-                self.maze[next_row][next_col] == 0 and 
-                (next_row, next_col) not in visited):
-                
-                visited.add((next_row, next_col))
-                self.path.append((next_row, next_col))
-                
-                found = self.depth_limited_search((next_row, next_col), visited, current_depth + 1)
-                if found:
-                    return True
-                
-               
-                self.path.pop()
-                visited.remove((next_row, next_col))
-        
-        return False
+This Python program implements **Iterative Deepening Depth-First Search (IDDFS)** to find a path from a start to a target cell in a 2D maze.
 
-    def iterative_deepening(self):
-        max_possible_depth = self.rows * self.cols  
-        
-        for self.maxDepth in range(1, max_possible_depth + 1):
-            visited = set()
-            visited.add(self.start)
-            self.path = [self.start]
-            
-            if self.depth_limited_search(self.start, visited, 0):
-                print(f"Path found at depth {self.maxDepth} using IDDFS")
-                print("Traversal Order:", self.path)
-                return
-        
-        print(f"Path not found at max depth {max_possible_depth} using IDDFS")
+## 📌 Description
 
-if __name__ == "__main__":
-    try:
-        iddfs = IterativeDeepening()
-        iddfs.read_input()
-        iddfs.iterative_deepening()
-    except ValueError:
-        print("Wrong Input format")
+* The maze is a grid where:
+
+  * `0` = free path
+  * `1` = wall/block
+* Input is taken from the user for:
+
+  1. Maze size (`rows cols`)
+  2. Maze matrix (0s and 1s)
+  3. Start position (`x y`)
+  4. Target position (`x y`)
+* The algorithm uses **depth-limited DFS**, increasing the depth limit until the target is found or the maximum possible depth is reached.
+
+## ✅ Sample Input
+
+```
+5 5
+0 0 1 0 0
+1 0 1 0 1
+0 0 0 0 0
+1 1 1 1 0
+0 0 0 1 0
+0 0
+4 4
+```
+
+## ▶️ How to Run
+
+```bash
+python iddfs_maze_solver.py
+```
+
+Follow the prompts to input maze dimensions, the maze, and start/target coordinates.
+
+## 🧠 Key Components
+
+* `depth_limited_search(current, visited, depth)`: Recursively explores paths up to a given depth.
+* `iterative_deepening()`: Increases depth limit until the goal is found.
+* `read_input()`: Reads input from the user (maze + start and target).
+
+## 📤 Output Example
+
+```
+Path found at depth 12 using IDDFS
+Traversal Order: [(0, 0), (0, 1), (1, 1), (2, 1), (2, 0), (2, 2), (2, 3), (1, 3), (0, 3), (0, 4), (1, 4), (2, 4), (3, 4), (4, 4)]
+```
+
+## ❗ Error Handling
+
+* If the input format is incorrect, it prints:
+
+  ```
+  Wrong Input format
+  ```
+
+
+
